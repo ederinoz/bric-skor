@@ -14,6 +14,9 @@ export default function App() {
   const [sonuc, setSonuc] =
     useState("=");
 
+  const [zon, setZon] =
+    useState("Yok");
+
   const [takim1Adi, setTakim1Adi] =
     useState("Takım 1");
 
@@ -75,14 +78,41 @@ export default function App() {
     if (sonuc === "+2")
       puan += 60;
 
-    if (sonuc === "-1")
-      puan = -50;
+    if (sonuc === "-1") {
 
-    if (sonuc === "-2")
-      puan = -100;
+      if (
+        zon === "Onlar Zon" ||
+        zon === "Herkes Zon"
+      ) {
+        puan = -100;
+      } else {
+        puan = -50;
+      }
+    }
 
-    if (sonuc === "-3")
-      puan = -150;
+    if (sonuc === "-2") {
+
+      if (
+        zon === "Onlar Zon" ||
+        zon === "Herkes Zon"
+      ) {
+        puan = -300;
+      } else {
+        puan = -100;
+      }
+    }
+
+    if (sonuc === "-3") {
+
+      if (
+        zon === "Onlar Zon" ||
+        zon === "Herkes Zon"
+      ) {
+        puan = -500;
+      } else {
+        puan = -150;
+      }
+    }
 
     return puan;
   }
@@ -100,6 +130,7 @@ export default function App() {
       kontrat:
         `${seviye} ${renk}`,
       sonuc,
+      zon,
       puan: hesaplaSkor(),
     };
 
@@ -374,6 +405,51 @@ export default function App() {
               </h2>
 
               <h3>
+                Zon
+              </h3>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns:
+                    "1fr 1fr",
+                  gap: 10,
+                  marginBottom: 20,
+                }}
+              >
+
+                {[
+                  "Yok",
+                  "Biz Zon",
+                  "Onlar Zon",
+                  "Herkes Zon",
+                ].map((z) => (
+
+                  <button
+                    key={z}
+                    onClick={() =>
+                      setZon(z)
+                    }
+                    style={{
+                      padding: 16,
+                      borderRadius: 12,
+                      border: "none",
+                      background:
+                        zon === z
+                          ? "#19c37d"
+                          : "#7c3aed",
+                      color: "white",
+                      fontSize: 20,
+                    }}
+                  >
+                    {z}
+                  </button>
+
+                ))}
+
+              </div>
+
+              <h3>
                 Seviye
               </h3>
 
@@ -414,354 +490,7 @@ export default function App() {
 
               </div>
 
-              <h3>
-                Renk
-              </h3>
-
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns:
-                    "1fr 1fr",
-                  gap: 10,
-                  marginBottom: 20,
-                }}
-              >
-
-                {[
-                  "Sinek",
-                  "Karo",
-                  "Kupa",
-                  "Maça",
-                  "NT",
-                ].map((r) => (
-
-                  <button
-                    key={r}
-                    onClick={() =>
-                      setRenk(r)
-                    }
-                    style={{
-                      padding: 24,
-                      borderRadius: 14,
-                      border: "none",
-                      background:
-                        renk === r
-                          ? "#19c37d"
-                          : "#2563eb",
-                      color: "white",
-                      fontSize: 28,
-                    }}
-                  >
-                    {r}
-                  </button>
-
-                ))}
-
-              </div>
-
-              <h3>
-                Sonuç
-              </h3>
-
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns:
-                    "1fr 1fr 1fr",
-                  gap: 10,
-                  marginBottom: 25,
-                }}
-              >
-
-                {[
-                  "=",
-                  "+1",
-                  "+2",
-                  "-1",
-                  "-2",
-                  "-3",
-                ].map((s) => (
-
-                  <button
-                    key={s}
-                    onClick={() =>
-                      setSonuc(s)
-                    }
-                    style={{
-                      padding: 20,
-                      borderRadius: 14,
-                      border: "none",
-                      background:
-                        sonuc === s
-                          ? "#19c37d"
-                          : "#7c3aed",
-                      color: "white",
-                      fontSize: 28,
-                    }}
-                  >
-                    {s}
-                  </button>
-
-                ))}
-
-              </div>
-
-              <div
-                style={{
-                  background: "#1f2937",
-                  padding: 25,
-                  borderRadius: 18,
-                  marginBottom: 25,
-                  textAlign: "center",
-                }}
-              >
-
-                <div
-                  style={{
-                    fontSize: 24,
-                  }}
-                >
-                  Seçilen El
-                </div>
-
-                <div
-                  style={{
-                    fontSize: 42,
-                    fontWeight:
-                      "bold",
-                    marginTop: 10,
-                  }}
-                >
-                  {takim}
-                </div>
-
-                <div
-                  style={{
-                    fontSize: 48,
-                    fontWeight:
-                      "bold",
-                    marginTop: 10,
-                  }}
-                >
-                  {seviye}
-                  {" "}
-                  {renk}
-                  {" "}
-                  {sonuc}
-                </div>
-
-                <div
-                  style={{
-                    marginTop: 14,
-                    fontSize: 40,
-                    color: "#19c37d",
-                  }}
-                >
-                  {hesaplaSkor()}
-                </div>
-
-              </div>
-
-              <button
-                onClick={eliKaydet}
-                style={{
-                  width: "100%",
-                  padding: 24,
-                  borderRadius: 18,
-                  border: "none",
-                  background:
-                    "#19c37d",
-                  color: "white",
-                  fontSize: 34,
-                  fontWeight:
-                    "bold",
-                }}
-              >
-                ELİ KAYDET
-              </button>
-
             </div>
-
-          </>
-        )}
-
-        {screen === "skor" && (
-          <>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns:
-                  "1fr 1fr",
-                gap: 15,
-                marginBottom: 25,
-              }}
-            >
-
-              <div
-                style={{
-                  background:
-                    "#2563eb",
-                  padding: 25,
-                  borderRadius: 18,
-                  textAlign:
-                    "center",
-                }}
-              >
-
-                <div
-                  style={{
-                    fontSize: 24,
-                  }}
-                >
-                  {takim1Adi}
-                </div>
-
-                <div
-                  style={{
-                    fontSize: 60,
-                    fontWeight:
-                      "bold",
-                    marginTop: 10,
-                  }}
-                >
-                  {takim1Toplam()}
-                </div>
-
-              </div>
-
-              <div
-                style={{
-                  background:
-                    "#dc2626",
-                  padding: 25,
-                  borderRadius: 18,
-                  textAlign:
-                    "center",
-                }}
-              >
-
-                <div
-                  style={{
-                    fontSize: 24,
-                  }}
-                >
-                  {takim2Adi}
-                </div>
-
-                <div
-                  style={{
-                    fontSize: 60,
-                    fontWeight:
-                      "bold",
-                    marginTop: 10,
-                  }}
-                >
-                  {takim2Toplam()}
-                </div>
-
-              </div>
-
-            </div>
-
-            {eller.map((el) => (
-
-              <div
-                key={el.id}
-                style={{
-                  background:
-                    "#111827",
-                  padding: 20,
-                  borderRadius: 18,
-                  marginBottom: 14,
-                }}
-              >
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent:
-                      "space-between",
-                    alignItems:
-                      "center",
-                  }}
-                >
-
-                  <div>
-
-                    <div
-                      style={{
-                        fontSize: 28,
-                        fontWeight:
-                          "bold",
-                      }}
-                    >
-                      {el.takim}
-                    </div>
-
-                    <div
-                      style={{
-                        fontSize: 24,
-                        marginTop: 4,
-                      }}
-                    >
-                      {el.kontrat}
-                    </div>
-
-                    <div
-                      style={{
-                        fontSize: 20,
-                        color:
-                          "#9ca3af",
-                        marginTop: 6,
-                      }}
-                    >
-                      Sonuç:
-                      {" "}
-                      {el.sonuc}
-                    </div>
-
-                  </div>
-
-                  <div
-                    style={{
-                      fontSize: 36,
-                      fontWeight:
-                        "bold",
-                      color:
-                        el.puan >= 0
-                          ? "#19c37d"
-                          : "#ef4444",
-                    }}
-                  >
-                    {el.puan}
-                  </div>
-
-                </div>
-
-                <button
-                  onClick={() =>
-                    eliSil(el.id)
-                  }
-                  style={{
-                    marginTop: 14,
-                    padding:
-                      "12px 16px",
-                    borderRadius: 12,
-                    border: "none",
-                    background:
-                      "#ef4444",
-                    color: "white",
-                    fontSize: 18,
-                  }}
-                >
-                  Sil
-                </button>
-
-              </div>
-
-            ))}
 
           </>
         )}
@@ -769,6 +498,5 @@ export default function App() {
       </div>
 
     </div>
-    
   );
 }
