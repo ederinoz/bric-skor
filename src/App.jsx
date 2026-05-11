@@ -448,6 +448,38 @@ export default function App() {
                 ))}
 
               </div>
+              <div style={{ marginBottom: 20 }}>
+  <div style={{ marginBottom: 10 }}>
+    Renk
+  </div>
+
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      gap: 10,
+    }}
+  >
+    {["Sinek", "Karo", "Kupa", "Maça", "NT"].map((el) => (
+      <button
+        key={el}
+        onClick={() => setRenk(el)}
+        style={{
+          padding: 20,
+          borderRadius: 12,
+          border: "none",
+          background:
+            renk === el ? "#2563eb" : "#374151",
+          color: "white",
+          fontSize: 18,
+          cursor: "pointer",
+        }}
+      >
+        {el}
+      </button>
+    ))}
+  </div>
+</div>
 
               <h3>
                 Seviye
