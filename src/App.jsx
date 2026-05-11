@@ -5,18 +5,6 @@ export default function App() {
   const [screen, setScreen] =
     useState("giris");
 
-  const [seviye, setSeviye] =
-    useState(1);
-
-  const [renk, setRenk] =
-    useState("");
-
-  const [sonuc, setSonuc] =
-    useState("=");
-
-  const [zon, setZon] =
-    useState("Yok");
-
   const [takim1Adi, setTakim1Adi] =
     useState("Takım 1");
 
@@ -25,6 +13,18 @@ export default function App() {
 
   const [takim, setTakim] =
     useState("Takım 1");
+
+  const [zon, setZon] =
+    useState("Yok");
+
+  const [seviye, setSeviye] =
+    useState(1);
+
+  const [renk, setRenk] =
+    useState("");
+
+  const [sonuc, setSonuc] =
+    useState("=");
 
   const [eller, setEller] =
     useState(() => {
@@ -77,6 +77,9 @@ export default function App() {
 
     if (sonuc === "+2")
       puan += 60;
+
+    if (sonuc === "+3")
+      puan += 90;
 
     if (sonuc === "-1") {
 
@@ -335,6 +338,7 @@ export default function App() {
                 style={{
                   display: "flex",
                   gap: 10,
+                  marginBottom: 20,
                 }}
               >
 
@@ -355,9 +359,7 @@ export default function App() {
                         ? "#19c37d"
                         : "#2563eb",
                     color: "white",
-                    fontSize: 26,
-                    fontWeight:
-                      "bold",
+                    fontSize: 24,
                   }}
                 >
                   {takim1Adi}
@@ -380,9 +382,7 @@ export default function App() {
                         ? "#19c37d"
                         : "#dc2626",
                     color: "white",
-                    fontSize: 26,
-                    fontWeight:
-                      "bold",
+                    fontSize: 24,
                   }}
                 >
                   {takim2Adi}
@@ -390,23 +390,7 @@ export default function App() {
 
               </div>
 
-            </div>
-
-            <div
-              style={{
-                background: "#111827",
-                padding: 20,
-                borderRadius: 18,
-              }}
-            >
-
-              <h2>
-                Yeni El
-              </h2>
-
-              <h3>
-                Zon
-              </h3>
+              <h3>Zon</h3>
 
               <div
                 style={{
@@ -439,7 +423,7 @@ export default function App() {
                           ? "#19c37d"
                           : "#7c3aed",
                       color: "white",
-                      fontSize: 20,
+                      fontSize: 18,
                     }}
                   >
                     {z}
@@ -448,42 +432,52 @@ export default function App() {
                 ))}
 
               </div>
-              <div style={{ marginBottom: 20 }}>
-  <div style={{ marginBottom: 10 }}>
-    Renk
-  </div>
 
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: 10,
-    }}
-  >
-    {["Sinek", "Karo", "Kupa", "Maça", "NT"].map((el) => (
-      <button
-        key={el}
-        onClick={() => setRenk(el)}
-        style={{
-          padding: 20,
-          borderRadius: 12,
-          border: "none",
-          background:
-            renk === el ? "#2563eb" : "#374151",
-          color: "white",
-          fontSize: 18,
-          cursor: "pointer",
-        }}
-      >
-        {el}
-      </button>
-    ))}
-  </div>
-</div>
+              <h3>Renk</h3>
 
-              <h3>
-                Seviye
-              </h3>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns:
+                    "1fr 1fr",
+                  gap: 10,
+                  marginBottom: 20,
+                }}
+              >
+
+                {[
+                  "Sinek",
+                  "Karo",
+                  "Kupa",
+                  "Maça",
+                  "NT",
+                ].map((r) => (
+
+                  <button
+                    key={r}
+                    onClick={() =>
+                      setRenk(r)
+                    }
+                    style={{
+                      padding: 20,
+                      borderRadius: 12,
+                      border: "none",
+                      background:
+                        renk === r
+                          ? "#2563eb"
+                          : "#374151",
+                      color: "white",
+                      fontSize: 20,
+                    }}
+                  >
+                    {r}
+                  </button>
+
+                ))}
+
+              </div>
+
+              <h3>Seviye</h3>
 
               <div
                 style={{
@@ -521,6 +515,70 @@ export default function App() {
                 ))}
 
               </div>
+
+              <h3>Sonuç</h3>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns:
+                    "repeat(3,1fr)",
+                  gap: 10,
+                  marginBottom: 20,
+                }}
+              >
+
+                {[
+                  "=",
+                  "+1",
+                  "+2",
+                  "+3",
+                  "-1",
+                  "-2",
+                  "-3",
+                ].map((s) => (
+
+                  <button
+                    key={s}
+                    onClick={() =>
+                      setSonuc(s)
+                    }
+                    style={{
+                      padding: 20,
+                      borderRadius: 12,
+                      border: "none",
+                      background:
+                        sonuc === s
+                          ? "#19c37d"
+                          : "#374151",
+                      color: "white",
+                      fontSize: 24,
+                    }}
+                  >
+                    {s}
+                  </button>
+
+                ))}
+
+              </div>
+
+              <button
+                onClick={eliKaydet}
+                style={{
+                  width: "100%",
+                  padding: 24,
+                  borderRadius: 18,
+                  border: "none",
+                  background:
+                    "#19c37d",
+                  color: "white",
+                  fontSize: 30,
+                  fontWeight:
+                    "bold",
+                }}
+              >
+                ELİ KAYDET
+              </button>
 
             </div>
 
