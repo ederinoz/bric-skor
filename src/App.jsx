@@ -5,7 +5,8 @@ export default function App() {
   const [takim1Adi, setTakim1Adi] = useState("Takım 1");
   const [takim2Adi, setTakim2Adi] = useState("Takım 2");
   const [takim, setTakim] = useState("Takım 1");
-  const [zon, setZon] = useState("Yok");
+  
+  const [boardNo, setBoardNo] = useState(1);
   const [seviye, setSeviye] = useState(1);
   const [renk, setRenk] = useState("Sinek");
   const [sonuc, setSonuc] = useState("=");
@@ -15,18 +16,34 @@ export default function App() {
     try {
       const kayit = localStorage.getItem("bricSkor");
       return kayit ? JSON.parse(kayit) : [];
-    } catch (e) {
-      return [];
-    }
+    } catch (e) { return []; }
   });
 
   useEffect(() => {
+    setBoardNo(eller.length + 1);
     localStorage.setItem("bricSkor", JSON.stringify(eller));
   }, [eller]);
 
+  const zonHesapla = (no) => {
+    const mod = (no - 1) % 16;
+    const rotasyon = [
+      "Yok", "Biz Zon", "Onlar Zon", "Herkes Zon",
+      "Biz Zon", "Onlar Zon", "Herkes Zon", "Yok",
+      "Onlar Zon", "Herkes Zon", "Yok", "Biz Zon",
+      "Herkes Zon", "Yok", "Biz Zon", "Onlar Zon"
+    ];
+    return rotasyon[mod];
+  };
+
+  const suankiZon = zonHesapla(boardNo);
+
   function hesaplaSkor() {
     let puan = 0;
-    const isVulnerable = (zon === "Biz Zon" || zon === "Herkes Zon");
+    const isVulnerable = 
+      (takim === takim1Adi && suankiZon === "Biz Zon") || 
+      (takim === takim2Adi && suankiZon === "Onlar Zon") || 
+      (suankiZon === "Herkes Zon");
+
     const katsayi = kontur === "Kontr" ? 2 : kontur === "Sürkontr" ? 4 : 1;
 
     if (sonuc.startsWith("-")) {
@@ -43,7 +60,6 @@ export default function App() {
       if (renk === "Sinek" || renk === "Karo") temelPuan = seviye * 20;
       else if (renk === "Kupa" || renk === "Maça") temelPuan = seviye * 30;
       else if (renk === "NT") temelPuan = 40 + (seviye - 1) * 30;
-
       puan = temelPuan * katsayi;
 
       if (sonuc !== "=") {
@@ -62,55 +78,48 @@ export default function App() {
   function eliKaydet() {
     const yeniEl = {
       id: Date.now(),
+      boardNo,
       takim,
       kontrat: `${seviye}${renk === 'NT' ? 'NT' : (renk === 'Sinek' ? '♣' : renk === 'Karo' ? '♦' : renk === 'Kupa' ? '♥' : '♠')}`,
       sonuc,
-      zon,
+      zon: suankiZon,
       kontur: kontur === "Yok" ? "" : kontur,
       puan: hesaplaSkor(),
     };
-    
     setEller(prev => [yeniEl, ...prev]);
     setScreen("skor");
     setSonuc("=");
     setKontur("Yok");
   }
 
-  function eliSil(id) {
-    setEller(prev => prev.filter(el => el.id !== id));
-  }
-
-  function tabelayiSifirla() {
-    if (window.confirm("Tabelayı sıfırlamak istediğine emin misin?")) {
-      setEller([]);
-    }
-  }
-
   const t1Top = eller.filter(e => e.takim === takim1Adi).reduce((s, e) => s + e.puan, 0);
   const t2Top = eller.filter(e => e.takim === takim2Adi).reduce((s, e) => s + e.puan, 0);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#081530", color: "white", padding: "15px", fontFamily: "Arial, sans-serif" }}>
+    <div style={{ minHeight: "100vh", background: "#081530", color: "white", padding: "15px", fontFamily: "sans-serif" }}>
       <div style={{ maxWidth: 500, margin: "0 auto" }}>
         
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 20 }}>
-          <button onClick={() => setScreen("giris")} style={{ padding: 14, borderRadius: 12, border: 'none', background: screen === "giris" ? "#19c37d" : "#374151", color: 'white', fontWeight: 'bold' }}>Giriş</button>
-          <button onClick={() => setScreen("skor")} style={{ padding: 14, borderRadius: 12, border: 'none', background: screen === "skor" ? "#19c37d" : "#374151", color: 'white', fontWeight: 'bold' }}>Skor</button>
-          <button onClick={tabelayiSifirla} style={{ padding: 14, borderRadius: 12, border: 'none', background: "#ef4444", color: 'white', fontSize: '11px' }}>Sıfırla</button>
+        {/* Board Bilgisi - Sabit Üst Bar */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, background: '#111827', padding: "12px 20px", borderRadius: 15, border: "1px solid #1f2937" }}>
+           <div style={{ color: '#19c37d', fontWeight: 'bold' }}>Board #{boardNo}</div>
+           <div style={{ color: '#f59e0b', fontWeight: 'bold' }}>Zon: {suankiZon}</div>
+        </div>
+
+        {/* Tab Navigasyonu */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
+          <button onClick={() => setScreen("giris")} style={{ padding: 15, borderRadius: 12, border: 'none', background: screen === "giris" ? "#19c37d" : "#374151", color: 'white', fontWeight: 'bold' }}>El Girişi</button>
+          <button onClick={() => setScreen("skor")} style={{ padding: 15, borderRadius: 12, border: 'none', background: screen === "skor" ? "#19c37d" : "#374151", color: 'white', fontWeight: 'bold' }}>Tabela & Ayar</button>
         </div>
 
         {screen === "giris" && (
           <div style={{ background: "#111827", padding: 20, borderRadius: 20 }}>
-            <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
-              <input value={takim1Adi} onChange={e => setTakim1Adi(e.target.value)} style={{ width: '50%', padding: 12, borderRadius: 10, border: 'none', background: '#374151', color: 'white', textAlign: 'center' }} />
-              <input value={takim2Adi} onChange={e => setTakim2Adi(e.target.value)} style={{ width: '50%', padding: 12, borderRadius: 10, border: 'none', background: '#374151', color: 'white', textAlign: 'center' }} />
-            </div>
-
+            {/* Kontratı Alan Takım */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 25 }}>
-              <button onClick={() => setTakim(takim1Adi)} style={{ padding: 16, borderRadius: 12, border: "none", background: takim === takim1Adi ? "#19c37d" : "#2563eb", color: "white", fontWeight: 'bold' }}>{takim1Adi}</button>
-              <button onClick={() => setTakim(takim2Adi)} style={{ padding: 16, borderRadius: 12, border: "none", background: takim === takim2Adi ? "#19c37d" : "#dc2626", color: "white", fontWeight: 'bold' }}>{takim2Adi}</button>
+              <button onClick={() => setTakim(takim1Adi)} style={{ padding: 18, borderRadius: 12, border: "none", background: takim === takim1Adi ? "#2563eb" : "#374151", color: "white", fontWeight: 'bold' }}>{takim1Adi}</button>
+              <button onClick={() => setTakim(takim2Adi)} style={{ padding: 18, borderRadius: 12, border: "none", background: takim === takim2Adi ? "#dc2626" : "#374151", color: "white", fontWeight: 'bold' }}>{takim2Adi}</button>
             </div>
 
+            {/* Kontrat Detayları */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 5, marginBottom: 15 }}>
               {["Sinek", "Karo", "Kupa", "Maça", "NT"].map(r => (
                 <button key={r} onClick={() => setRenk(r)} style={{ padding: 12, fontSize: 11, borderRadius: 8, border: 'none', background: renk === r ? "#2563eb" : "#374151", color: 'white' }}>{r}</button>
@@ -135,38 +144,43 @@ export default function App() {
               ))}
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginBottom: 30 }}>
-              {["Yok", "Biz Zon", "Onlar Zon", "Herkes Zon"].map(z => (
-                <button key={z} onClick={() => setZon(z)} style={{ padding: 10, fontSize: 13, borderRadius: 8, border: 'none', background: zon === z ? "#19c37d" : "#374151", color: 'white' }}>{z}</button>
-              ))}
-            </div>
-
             <button onClick={eliKaydet} style={{ width: "100%", padding: 22, borderRadius: 15, border: "none", background: "#19c37d", color: "white", fontSize: 24, fontWeight: "bold" }}>ELİ KAYDET</button>
           </div>
         )}
 
         {screen === "skor" && (
           <div>
+            {/* Ayarlar ve Takım İsimleri Bölümü */}
+            <div style={{ background: "#111827", padding: 15, borderRadius: 18, marginBottom: 20, border: "1px solid #1f2937" }}>
+              <div style={{ display: "flex", gap: 10, marginBottom: 15 }}>
+                <input value={takim1Adi} onChange={e => setTakim1Adi(e.target.value)} placeholder="Takım 1" style={{ width: '50%', padding: 10, borderRadius: 8, border: 'none', background: '#374151', color: 'white', textAlign: 'center' }} />
+                <input value={takim2Adi} onChange={e => setTakim2Adi(e.target.value)} placeholder="Takım 2" style={{ width: '50%', padding: 10, borderRadius: 8, border: 'none', background: '#374151', color: 'white', textAlign: 'center' }} />
+              </div>
+              <button onClick={() => { if(window.confirm("Tabelayı tamamen sıfırlamak istiyor musunuz?")) setEller([]); }} style={{ width: "100%", padding: 10, borderRadius: 8, border: 'none', background: "#ef4444", color: 'white', fontWeight: 'bold', fontSize: 13 }}>TABELAYI SIFIRLA</button>
+            </div>
+
+            {/* Toplam Skorlar */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 15, marginBottom: 25 }}>
               <div style={{ background: "#2563eb", padding: 20, borderRadius: 20, textAlign: 'center' }}>
-                <div style={{ fontSize: 14 }}>{takim1Adi}</div>
-                <div style={{ fontSize: 44, fontWeight: 'bold' }}>{t1Top}</div>
+                <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 5 }}>{takim1Adi}</div>
+                <div style={{ fontSize: 40, fontWeight: 'bold' }}>{t1Top}</div>
               </div>
               <div style={{ background: "#dc2626", padding: 20, borderRadius: 20, textAlign: 'center' }}>
-                <div style={{ fontSize: 14 }}>{takim2Adi}</div>
-                <div style={{ fontSize: 44, fontWeight: 'bold' }}>{t2Top}</div>
+                <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 5 }}>{takim2Adi}</div>
+                <div style={{ fontSize: 40, fontWeight: 'bold' }}>{t2Top}</div>
               </div>
             </div>
             
+            {/* El Listesi */}
             {eller.map(el => (
-              <div key={el.id} style={{ background: "#111827", padding: 18, borderRadius: 18, marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderLeft: `6px solid ${el.takim === takim1Adi ? '#2563eb' : '#dc2626'}` }}>
+              <div key={el.id} style={{ background: "#111827", padding: 15, borderRadius: 15, marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderLeft: `5px solid ${el.takim === takim1Adi ? '#2563eb' : '#dc2626'}` }}>
                 <div>
-                  <div style={{ fontWeight: 'bold' }}>{el.takim}</div>
-                  <div style={{ fontSize: 14, color: '#9ca3af' }}>{el.kontrat} {el.kontur} {el.sonuc} | {el.zon}</div>
+                  <div style={{ fontWeight: 'bold', fontSize: 15 }}>B#{el.boardNo} - {el.takim}</div>
+                  <div style={{ fontSize: 13, color: '#9ca3af' }}>{el.kontrat} {el.kontur} {el.sonuc} | {el.zon}</div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 24, fontWeight: 'bold', color: el.puan >= 0 ? '#19c37d' : '#ef4444' }}>{el.puan > 0 ? `+${el.puan}` : el.puan}</div>
-                  <button onClick={() => eliSil(el.id)} style={{ color: '#ef4444', background: 'none', border: 'none', fontSize: 13, cursor: 'pointer' }}>Sil</button>
+                  <div style={{ fontSize: 20, fontWeight: 'bold', color: el.puan >= 0 ? '#19c37d' : '#ef4444' }}>{el.puan > 0 ? `+${el.puan}` : el.puan}</div>
+                  <button onClick={() => setEller(prev => prev.filter(e => e.id !== el.id))} style={{ color: '#ef4444', background: 'none', border: 'none', fontSize: 12, cursor: 'pointer', marginTop: 5 }}>Sil</button>
                 </div>
               </div>
             ))}
