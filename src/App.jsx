@@ -9,6 +9,7 @@ export default function App() {
   const [seviye, setSeviye] = useState(1);
   const [renk, setRenk] = useState("Sinek");
   const [sonuc, setSonuc] = useState("=");
+  const [kontur, setKontur] = useState("Yok");
   const [eller, setEller] = useState(() => {
     const kayit = localStorage.getItem("bricSkor");
     return kayit ? JSON.parse(kayit) : [];
@@ -35,6 +36,13 @@ export default function App() {
     if (sonuc === "-1") puan = isVulnerable ? -100 : -50;
     if (sonuc === "-2") puan = isVulnerable ? -200 : -100;
     if (sonuc === "-3") puan = isVulnerable ? -300 : -150;
+    if (kontur === "Kontr") {
+  puan *= 2;
+}
+
+if (kontur === "Sürkontr") {
+  puan *= 4;
+}
 
     return puan;
   }
@@ -46,6 +54,7 @@ export default function App() {
       kontrat: `${seviye} ${renk}`,
       sonuc,
       zon,
+      kontur,
       puan: hesaplaSkor(),
     };
     setEller([yeniEl, ...eller]);
@@ -156,7 +165,36 @@ export default function App() {
   </div>
 
   <h3>Sonuç</h3>
+<h3>Kontür</h3>
 
+<div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr 1fr",
+    gap: 8,
+    marginBottom: 20,
+  }}
+>
+  {["Yok", "Kontr", "Sürkontr"].map((k) => (
+    <button
+      key={k}
+      onClick={() => setKontur(k)}
+      style={{
+        padding: 14,
+        borderRadius: 10,
+        border: "none",
+        background:
+          kontur === k
+            ? "#8b5cf6"
+            : "#374151",
+        color: "white",
+        fontSize: 18,
+      }}
+    >
+      {k}
+    </button>
+  ))}
+</div>
   <div
     style={{
       display: "grid",
@@ -212,7 +250,7 @@ export default function App() {
             {eller.map((el) => (
               <div key={el.id} style={{ background: "#111827", padding: 15, borderRadius: 15, marginBottom: 10 }}>
                 <div style={{ fontWeight: "bold" }}>{el.takim} - {el.kontrat}</div>
-                <div style={{ color: "#9ca3af" }}>{el.zon} | {el.sonuc}</div>
+                <div style={{ color: "#9ca3af" }}>{el.zon} | {el.sonuc}| {el.kontur}</div>
                 <div style={{ fontSize: 24, fontWeight: "bold", color: el.puan >= 0 ? "#19c37d" : "#ef4444" }}>{el.puan} Puan</div>
                 <button onClick={() => eliSil(el.id)} style={{ marginTop: 10, background: "#ef4444", color: "white", border: "none", padding: "5px 10px", borderRadius: 5 }}>Sil</button>
               </div>
