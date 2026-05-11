@@ -10,6 +10,57 @@ export default function App() {
 
   const [sonuc, setSonuc] = useState("=");
 
+  const [eller, setEller] = useState([]);
+
+  function hesaplaSkor() {
+
+    let temel = 0;
+
+    if (renk === "Sinek" || renk === "Karo") {
+      temel = seviye * 20;
+    }
+
+    if (renk === "Kupa" || renk === "Maça") {
+      temel = seviye * 30;
+    }
+
+    if (renk === "NT") {
+      temel = 40 + ((seviye - 1) * 30);
+    }
+
+    if (sonuc === "+1") temel += 30;
+    if (sonuc === "+2") temel += 60;
+
+    if (sonuc === "-1") temel -= 50;
+    if (sonuc === "-2") temel -= 100;
+    if (sonuc === "-3") temel -= 150;
+
+    return temel;
+  }
+
+  function eliKaydet() {
+
+    if (renk === "") {
+      alert("Renk seç");
+      return;
+    }
+
+    const yeniEl = {
+      kontrat: `${seviye} ${renk}`,
+      sonuc: sonuc,
+      skor: hesaplaSkor()
+    };
+
+    setEller([yeniEl, ...eller]);
+
+    setScreen("skor");
+  }
+
+  const toplamSkor = eller.reduce(
+    (toplam, el) => toplam + el.skor,
+    0
+  );
+
   return (
     <div
       style={{
@@ -264,7 +315,8 @@ export default function App() {
                 background: "#1f2937",
                 padding: "20px",
                 borderRadius: "16px",
-                textAlign: "center"
+                textAlign: "center",
+                marginBottom: "20px"
               }}
             >
 
@@ -286,7 +338,33 @@ export default function App() {
                 {seviye} {renk} {sonuc}
               </div>
 
+              <div
+                style={{
+                  marginTop: "10px",
+                  fontSize: "24px",
+                  color: "#10b981"
+                }}
+              >
+                {hesaplaSkor()} puan
+              </div>
+
             </div>
+
+            <button
+              onClick={eliKaydet}
+              style={{
+                width: "100%",
+                padding: "22px",
+                borderRadius: "16px",
+                border: "none",
+                background: "#10b981",
+                color: "white",
+                fontSize: "24px",
+                fontWeight: "bold"
+              }}
+            >
+              ELİ KAYDET
+            </button>
 
           </div>
 
@@ -304,7 +382,7 @@ export default function App() {
 
             <h2
               style={{
-                fontSize: "24px",
+                fontSize: "28px",
                 marginBottom: "20px"
               }}
             >
@@ -313,13 +391,100 @@ export default function App() {
 
             <div
               style={{
-                background: "#1f2937",
+                background: "#10b981",
                 padding: "20px",
-                borderRadius: "16px"
+                borderRadius: "16px",
+                marginBottom: "20px",
+                textAlign: "center"
               }}
             >
-              Henüz skor yok
+
+              <div
+                style={{
+                  fontSize: "20px"
+                }}
+              >
+                Toplam Skor
+              </div>
+
+              <div
+                style={{
+                  fontSize: "42px",
+                  fontWeight: "bold"
+                }}
+              >
+                {toplamSkor}
+              </div>
+
             </div>
+
+            {eller.length === 0 && (
+
+              <div
+                style={{
+                  background: "#1f2937",
+                  padding: "20px",
+                  borderRadius: "16px"
+                }}
+              >
+                Henüz skor yok
+              </div>
+
+            )}
+
+            {eller.map((el, index) => (
+
+              <div
+                key={index}
+                style={{
+                  background: "#1f2937",
+                  padding: "18px",
+                  borderRadius: "16px",
+                  marginBottom: "12px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center"
+                }}
+              >
+
+                <div>
+
+                  <div
+                    style={{
+                      fontSize: "24px",
+                      fontWeight: "bold"
+                    }}
+                  >
+                    {el.kontrat}
+                  </div>
+
+                  <div
+                    style={{
+                      color: "#9ca3af",
+                      marginTop: "5px"
+                    }}
+                  >
+                    Sonuç: {el.sonuc}
+                  </div>
+
+                </div>
+
+                <div
+                  style={{
+                    fontSize: "28px",
+                    fontWeight: "bold",
+                    color:
+                      el.skor >= 0
+                        ? "#10b981"
+                        : "#ef4444"
+                  }}
+                >
+                  {el.skor}
+                </div>
+
+              </div>
+
+            ))}
 
           </div>
 
