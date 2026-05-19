@@ -7,6 +7,7 @@ export default function App() {
   // =========================
 
   function otomatikZon(board) {
+
     const dongu = ((board - 1) % 16) + 1;
 
     const tablo = {
@@ -53,7 +54,7 @@ export default function App() {
   );
 
   const [screen, setScreen] = useState(
-    () => (eller.length > 0 ? "skor" : "giris")
+    () => eller.length > 0 ? "skor" : "giris"
   );
 
   useEffect(() => {
@@ -260,8 +261,7 @@ export default function App() {
       t1: skor.t1,
       t2: skor.t2,
     };
-
-    setEller((prev) => [yeniEl, ...prev]);
+        setEller((prev) => [yeniEl, ...prev]);
 
     setScreen("skor");
 
@@ -282,7 +282,7 @@ export default function App() {
   }
 
   // =========================
-  // RENK STİL MOTORU
+  // KOZ / NT RENK MOTORU
   // =========================
 
   function getKozButonStyle(butonRengi) {
@@ -352,8 +352,106 @@ export default function App() {
           Board #{boardNo} | {zon}
         </div>
 
-        {/* DEVAMI ESKİ KODLA AYNI */}
-      </div>
-    </div>
-  );
-}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 10,
+          marginBottom: 20
+        }}>
+
+          <button
+            onClick={() => setScreen("giris")}
+            style={{
+              padding: 16,
+              borderRadius: 14,
+              border: "none",
+              background: screen === "giris"
+                ? "#19c37d"
+                : "#374151",
+              color: "white",
+              fontSize: 20,
+              fontWeight: "bold",
+              cursor: "pointer"
+            }}
+          >
+            Veri Girişi
+          </button>
+
+          <button
+            onClick={() => setScreen("skor")}
+            style={{
+              padding: 16,
+              borderRadius: 14,
+              border: "none",
+              background: screen === "skor"
+                ? "#19c37d"
+                : "#374151",
+              color: "white",
+              fontSize: 20,
+              fontWeight: "bold",
+              cursor: "pointer"
+            }}
+          >
+            Skor Tahtası
+          </button>
+
+        </div>
+
+        {screen === "giris" && (
+
+          <div style={{
+            background: "#111827",
+            padding: 20,
+            borderRadius: 20
+          }}>
+
+            <label style={{
+              display: "block",
+              marginBottom: 8,
+              color: "#9ca3af"
+            }}>
+              Kontratı Alan Takım:
+            </label>
+
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 10,
+              marginBottom: 20
+            }}>
+
+              <button
+                onClick={() => setTakim1Mi(true)}
+                style={{
+                  padding: 16,
+                  borderRadius: 12,
+                  border: "none",
+                  background: takim1Mi
+                    ? "#2563eb"
+                    : "#374151",
+                  color: "white",
+                  fontWeight: "bold",
+                  cursor: "pointer"
+                }}
+              >
+                {takim1Adi || "Takım 1"}
+              </button>
+
+              <button
+                onClick={() => setTakim1Mi(false)}
+                style={{
+                  padding: 16,
+                  borderRadius: 12,
+                  border: "none",
+                  background: !takim1Mi
+                    ? "#2563eb"
+                    : "#374151",
+                  color: "white",
+                  fontWeight: "bold",
+                  cursor: "pointer"
+                }}
+              >
+                {takim2Adi || "Takım 2"}
+              </button>
+
+            </div>
