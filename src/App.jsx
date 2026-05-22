@@ -2,30 +2,18 @@ import { useState, useEffect } from "react";
 
 export default function App() {
 
-  // =========================
-  // OTOMATİK ZON MOTORU
-  // =========================
+  // ==========================================
+  // ERGUN BEY'İN GÜNEY MERKEZLİ ŞAŞMAZ ZON MOTORU
+  // 1: Herkes, 2: Onlar, 3: Biz, 4: Hiç Kimse
+  // ==========================================
   function otomatikZon(board) {
-    const dongu = ((board - 1) % 16) + 1;
-    const tablo = {
-      1: "Yok",
-      2: "Biz Zon",
-      3: "Onlar Zon",
-      4: "Herkes Zon",
-      5: "Biz Zon",
-      6: "Onlar Zon",
-      7: "Herkes Zon",
-      8: "Yok",
-      9: "Onlar Zon",
-      10: "Herkes Zon",
-      11: "Yok",
-      12: "Biz Zon",
-      13: "Herkes Zon",
-      14: "Yok",
-      15: "Biz Zon",
-      16: "Onlar Zon",
-    };
-    return tablo[dongu];
+    const dongu = (board - 1) % 4; // 0, 1, 2, 3 şeklinde döner
+    
+    if (dongu === 0) return "Herkes Zon";
+    if (dongu === 1) return "Onlar Zon";
+    if (dongu === 2) return "Biz Zon";
+    if (dongu === 3) return "Hiç Kimse";
+    return "Hiç Kimse";
   }
 
   // =========================
